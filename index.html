@@ -2,9 +2,233 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Coming Soon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalvin Lam</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #fff;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      text-align: center;
+      padding: 32px 0 24px;
+    }
+
+    header h1 {
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .reel {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      padding: 0 40px;
+      gap: 3px;
+    }
+
+    .reel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sliver {
+      flex-shrink: 0;
+      width: 80px;
+      height: 480px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sliver:hover {
+      width: 320px;
+    }
+
+    .sliver-inner {
+      width: 320px;
+      height: 100%;
+      position: relative;
+    }
+
+    .placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+    }
+
+    .sliver-label {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #fff;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .sliver:hover .sliver-label {
+      opacity: 1;
+    }
+
+    /* placeholder colors — swap for real video thumbnails */
+    .sliver:nth-child(1) .placeholder { background: #1a1a1a; }
+    .sliver:nth-child(2) .placeholder { background: #2d2d2d; }
+    .sliver:nth-child(3) .placeholder { background: #404040; }
+    .sliver:nth-child(4) .placeholder { background: #1a1a1a; }
+    .sliver:nth-child(5) .placeholder { background: #2d2d2d; }
+    .sliver:nth-child(6) .placeholder { background: #404040; }
+    .sliver:nth-child(7) .placeholder { background: #1a1a1a; }
+
+    /* overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .overlay.active {
+      display: flex;
+    }
+
+    .overlay video {
+      max-width: 90vw;
+      max-height: 90vh;
+      outline: none;
+    }
+
+    .overlay-close {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px 40px;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: lowercase;
+    }
+
+    nav a {
+      color: #000;
+      text-decoration: none;
+      margin-right: 24px;
+    }
+
+    nav a:last-child {
+      margin-right: 0;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello World</h1>
+
+  <header>
+    <h1>Kalvin Lam</h1>
+  </header>
+
+  <div class="reel" id="reel">
+    <!-- slivers will be injected by JS -->
+  </div>
+
+  <div class="overlay" id="overlay">
+    <button class="overlay-close" id="overlayClose">&#x2715;</button>
+    <video id="overlayVideo" controls></video>
+  </div>
+
+  <nav>
+    <div>
+      <a href="#">work</a>
+      <a href="#">about</a>
+    </div>
+    <div>
+      <a href="#">contact</a>
+    </div>
+  </nav>
+
+  <script>
+    const videos = [
+      { label: 'video 01', src: '' },
+      { label: 'video 02', src: '' },
+      { label: 'video 03', src: '' },
+      { label: 'video 04', src: '' },
+      { label: 'video 05', src: '' },
+      { label: 'video 06', src: '' },
+      { label: 'video 07', src: '' },
+    ];
+
+    const reel = document.getElementById('reel');
+    const overlay = document.getElementById('overlay');
+    const overlayVideo = document.getElementById('overlayVideo');
+    const overlayClose = document.getElementById('overlayClose');
+
+    videos.forEach((v, i) => {
+      const sliver = document.createElement('div');
+      sliver.className = 'sliver';
+      sliver.innerHTML = `
+        <div class="sliver-inner">
+          <div class="placeholder">
+            <span class="sliver-label">${v.label}</span>
+          </div>
+        </div>
+      `;
+      sliver.addEventListener('click', () => {
+        if (!v.src) return;
+        overlayVideo.src = v.src;
+        overlayVideo.play();
+        overlay.classList.add('active');
+      });
+      reel.appendChild(sliver);
+    });
+
+    overlayClose.addEventListener('click', closeOverlay);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeOverlay();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeOverlay();
+    });
+
+    function closeOverlay() {
+      overlay.classList.remove('active');
+      overlayVideo.pause();
+      overlayVideo.src = '';
+    }
+  </script>
+
 </body>
 </html>
