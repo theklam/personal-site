@@ -45,7 +45,7 @@
       overflow-y: hidden;
       scrollbar-width: none;
       gap: 3px;
-      width: 100%;
+      max-width: 100vw;
       padding: 0 40px;
     }
 
@@ -140,7 +140,8 @@
 
     nav {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
+      gap: 32px;
       padding: 20px 40px;
       font-size: 12px;
       letter-spacing: 0.06em;
@@ -154,16 +155,6 @@
 
     nav a:hover {
       text-decoration: underline;
-    }
-
-    .nav-left {
-      display: flex;
-      gap: 24px;
-    }
-
-    .nav-right {
-      display: flex;
-      gap: 24px;
     }
   </style>
 </head>
@@ -185,18 +176,14 @@
   </div>
 
   <nav>
-    <div class="nav-left">
-      <a href="#">work</a>
-      <a href="#">about</a>
-    </div>
-    <div class="nav-right">
-      <a href="#">contact</a>
-    </div>
+    <a href="#">work</a>
+    <a href="#">about</a>
+    <a href="#">contact</a>
   </nav>
 
   <script>
     const videos = [
-      { label: 'video 01', src: '' },
+      { label: 'teriyaki boyz', src: 'teriyaki_boyz_kanye_west.mp4' },
       { label: 'video 02', src: '' },
       { label: 'video 03', src: '' },
       { label: 'video 04', src: '' },
